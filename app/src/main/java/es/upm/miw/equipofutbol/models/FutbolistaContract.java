@@ -11,6 +11,7 @@ public class FutbolistaContract {
 
         public static  final String TABLE_NAME = "futbolistas"; //nombre de la tabla.
         //el nombre de la columna en la BBDD para cada campo.
+        //public static final String COL_NAME_ID = BaseColumns._ID; //recuperamos el id del padre.
         public static final String COL_NAME_NOMBRE = "nombre";
         public static final String COL_NAME_DORSAL = "dorsal";
         public static final String COL_NAME_LESIONADO = "lesionado";
