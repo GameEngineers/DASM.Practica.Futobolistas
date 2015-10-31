@@ -1,9 +1,12 @@
 package es.upm.miw.equipofutbol.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by az0112 on 30/10/2015.
  */
-public class Futbolista {
+public class Futbolista implements Parcelable{
 
     private int _id;
     private String _nombre;
@@ -89,5 +92,55 @@ public class Futbolista {
                 ", _equipo='" + _equipo + '\'' +
                 ", _url_imagen='" + _url_imagen + '\'' +
                 '}';
+    }
+
+    /**
+     * Describe the kinds of special objects contained in this Parcelable's
+     * marshalled representation.
+     *
+     * @return a bitmask indicating the set of special object types marshalled
+     * by the Parcelable.
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Escribe los valores en una pila por lo que debemos leerlos en el mismo orden.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(_id);
+        dest.writeString(_nombre);
+        dest.writeInt(_dorsal);
+        dest.writeInt((byte) (_lesionado ? 1 : 0));
+        dest.writeString(_equipo);
+        dest.writeString(_url_imagen);
+    }
+
+    //indicas como se maneja la estructura. Con un plugin se puede construir automaticamente una clase parcelable.
+    public static final Parcelable.Creator<Futbolista> CREATOR
+            = new Parcelable.Creator<Futbolista>() {
+        public Futbolista createFromParcel(Parcel in) {
+            return new Futbolista(in);
+        }
+
+        public Futbolista[] newArray(int size) {
+            return new Futbolista[size];
+        }
+    };
+
+    private Futbolista(Parcel origen) {
+        this._id         = origen.readInt();        // id
+        this._nombre     = origen.readString();     // nombre
+        this._dorsal     = origen.readInt();        // dorsal
+        this._lesionado  = origen.readByte() != 0;  // lesionado
+        this._equipo     = origen.readString();     // equipo
+        this._url_imagen = origen.readString();     // url_imagen
     }
 }

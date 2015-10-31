@@ -1,11 +1,16 @@
 package es.upm.miw.equipofutbol;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -36,14 +41,55 @@ public class ActividadPrincipal extends AppCompatActivity {
 
 
         RepositorioFutbolistas repositorio = new RepositorioFutbolistas(getApplicationContext());
-
-        repositorio.add(new Futbolista(1, "Jugador 1", 1, true, "Primera", null));
+        int num = (int) (100 * Math.random());
+        Log.i("Num", String.format("%d", repositorio.add(
+                new Futbolista(num, "Jugador " + String.format("%d", num), num, num % 2 == 0, "Primera", null))));
+        repositorio.add(
+                new Futbolista(++num, "Jugador " + String.format("%d", num), num, num % 2 == 0, "Primera",
+                        "http://www.upm.es/estaticos/imagenes/comunes/universidad_politecnica_logoI.png"));
 
         this.futbolistas = repositorio.getAll();
         ArrayAdapter<Futbolista> adaptador = new FutbolistaAdapter(this, futbolistas);
         lvListadoFutbolistas = (ListView) findViewById(R.id.lvListadoFutbolistas);
         lvListadoFutbolistas.setAdapter(adaptador);
+
+        lvListadoFutbolistas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO editar futbolistas
+                // Toast.makeText(contexto, futbolistas.get(position).toString(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ActividadPrincipal.this, ActividadMostrarFutbolista.class);
+                // con la clase parcelable podemos pasar directamente el objeto al intent
+                intent.putExtra("MOSTRAR_Futbolista", futbolistas.get(position));
+                startActivity(intent);
+            }
+        });
+
         return;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_actividad_principal, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                // TODO Ajustes
+                break;
+            case R.id.accionVaciar:
+                // TODO dialog(confirmar) -> vaciar  tabla
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

@@ -1,4 +1,8 @@
 <resources>
-    <string name="app_name">EquipoFutbol</string>
-    <string name="title_activity_actividad_principal">ActividadPrincipal</string>
+    <string name="app_name">MiW: RayoVallecano</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="altImagenFutbolista">Imagen del piloto</string>
+    <string name="msgMalformedURL">ERROR: URL mal formada</string>
+    <string name="altFutbolistaActivo">¿activo?</string>
+    <string name="opcionDrop">Borrar todos</string>
 </resources>

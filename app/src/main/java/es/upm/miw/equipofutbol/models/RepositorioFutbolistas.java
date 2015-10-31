@@ -104,9 +104,66 @@ public class RepositorioFutbolistas extends SQLiteOpenHelper {
                 futbolistas.add(futbolista);
                 cursor.moveToNext();
             }
+            cursor.close();
         }
 
 
         return futbolistas;
     }
+
+    /**
+     * Devuelve el número de futbolistas de la tabla
+     * @return Número de futbolistas
+     */
+    public long count() {
+        String consultaSQL = "SELECT COUNT(*) FROM " + tablaFutbolista.TABLE_NAME;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(consultaSQL, null);
+        cursor.moveToFirst();
+        long numero = cursor.getLong(0);
+        cursor.close();
+
+        return numero;
+    }
+
+    /**
+     * Elimina todos los futbolistas
+     * @return long Número de filas eliminadas
+     */
+    public long deleteAll() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(tablaFutbolista.TABLE_NAME, "1", null);
+    }
+
+    /**
+     * Recupera un futbolista por ID
+     * @param id Identificador del futbolista
+     * @return  futbolistas
+     */
+    public Futbolista getFutbolistaByID(int id) {
+        String consultaSQL = "SELECT * FROM " + tablaFutbolista.TABLE_NAME
+                + " WHERE " + tablaFutbolista._ID + " = ?";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Futbolista futbolista = null;
+        Cursor cursor = db.rawQuery(
+                consultaSQL,
+                new String[]{ String.valueOf(id) }
+        );
+
+        if (cursor.moveToFirst()) {
+            futbolista = new Futbolista(
+                    cursor.getInt(cursor.getColumnIndex(tablaFutbolista._ID)),           // id
+                    cursor.getString(cursor.getColumnIndex(tablaFutbolista.COL_NAME_NOMBRE)),    // nombre
+                    cursor.getInt(cursor.getColumnIndex(tablaFutbolista.COL_NAME_DORSAL)),       // dorsal
+                    cursor.getInt(cursor.getColumnIndex(tablaFutbolista.COL_NAME_LESIONADO)) != 0,  // lesionado
+                    cursor.getString(cursor.getColumnIndex(tablaFutbolista.COL_NAME_EQUIPO)),    // equipo
+                    cursor.getString(cursor.getColumnIndex(tablaFutbolista.COL_NAME_URL))        // imagen_url
+            );
+            cursor.close();
+        }
+
+        return futbolista;
+    }
+
 }
