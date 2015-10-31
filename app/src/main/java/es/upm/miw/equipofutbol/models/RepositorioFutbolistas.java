@@ -3,11 +3,14 @@ package es.upm.miw.equipofutbol.models;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 //para imporatar una clase con statics.
+import java.util.ArrayList;
+
 import static es.upm.miw.equipofutbol.models.FutbolistaContract.tablaFutbolista;
 /**
  * Clase para la gestión de la BBDD. extiende SQLiteHelper para la gestión.
@@ -76,5 +79,34 @@ public class RepositorioFutbolistas extends SQLiteOpenHelper {
         valores.put(tablaFutbolista.COL_NAME_URL, futbolista.get_url_imagen());
 
         return db.insert(tablaFutbolista.TABLE_NAME, null, valores);
+    }
+
+    public ArrayList<Futbolista> getAll(){
+        ArrayList<Futbolista> futbolistas = new ArrayList<>();
+        //obtenemos la base de datos para lectura
+        SQLiteDatabase db = getReadableDatabase();
+        String sentenciaSql = "SELECT * FROM " + tablaFutbolista.TABLE_NAME;
+
+        //devuelve un cursor para lectura de datos del select
+        Cursor cursor = db.rawQuery(sentenciaSql, null);
+
+        if (cursor.moveToFirst()){//si hay datos
+            while (!cursor.isAfterLast()){
+                Futbolista futbolista = new Futbolista(
+                        cursor.getInt(cursor.getColumnIndex(tablaFutbolista._ID)),
+                        cursor.getString(cursor.getColumnIndex(tablaFutbolista.COL_NAME_NOMBRE)),
+                        cursor.getInt(cursor.getColumnIndex(tablaFutbolista.COL_NAME_DORSAL)),
+                        cursor.getInt(cursor.getColumnIndex(tablaFutbolista.COL_NAME_LESIONADO)) != 0,
+                        cursor.getString(cursor.getColumnIndex(tablaFutbolista.COL_NAME_EQUIPO)),
+                        cursor.getString(cursor.getColumnIndex(tablaFutbolista.COL_NAME_URL))
+                );
+                //TODO rellenar los datos recuperados con el cursor
+                futbolistas.add(futbolista);
+                cursor.moveToNext();
+            }
+        }
+
+
+        return futbolistas;
     }
 }
